@@ -62,12 +62,45 @@
         JOIN song_collection sc ON sc.collection = c.id 
         JOIN song s ON s.id = sc.song 
         JOIN album_artist aa ON aa.album = s.song_album
-        JOIN artist a ON a.id = aa.artist 
+        JOIN artist a ON a.id = aa.artist
   WHERE a.artist_name = 'Twisted Sister';
   
 -- Задание 4
- 
-  
+----- 4.1 Названия альбомов, в которых присутствуют исполнители более чем одного жанра.
+SELECT a.album_name
+  FROM album a
+       JOIN album_artist aa ON aa.album = a.id
+ WHERE aa.artist IN (SELECT ag.artist
+                       FROM artist_genre ag
+                      GROUP BY ag.artist
+                     HAVING count(ag.genre) > 1);
+
+----- 4.2 Наименования треков, которые не входят в сборники.
+SELECT s.song_name
+  FROM song s
+ WHERE NOT EXISTS (SELECT NULL
+                     FROM song_collection sc
+                    WHERE sc.song = s.id);
+
+----- 4.3 Исполнитель или исполнители, написавшие самый короткий по продолжительности трек, — теоретически таких треков может быть несколько.
+ SELECT a.artist_name
+   FROM song s2
+        JOIN album_artist aa ON aa.album = s2.song_album
+        JOIN artist a ON a.id = aa.artist
+  WHERE s2.song_duration_seconds = (SELECT min(s.song_duration_seconds)
+                                      FROM song s);
+
+----- 4.4 Названия альбомов, содержащих наименьшее количество треков.
+WITH minimum AS (SELECT count(s.ID) song_count,
+                        s.song_album
+                   FROM song s
+                  GROUP BY s.song_album)
+SELECT a.album_name
+  FROM album a
+ WHERE EXISTS (SELECT null
+                 FROM minimum s
+                WHERE s.song_album = a.id
+                  AND s.song_count = (SELECT min(song_count) FROM minimum));
   
        
 
