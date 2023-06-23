@@ -1,6 +1,7 @@
 CREATE TABLE collection (
 	id SERIAL PRIMARY KEY,
-	collection_name VARCHAR(60) NOT NULL
+	collection_name VARCHAR(60) NOT NULL,
+	release_date DATE NOT NULL
 );
 
 CREATE TABLE album (
