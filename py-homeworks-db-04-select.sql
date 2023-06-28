@@ -101,34 +101,3 @@ SELECT a.album_name
                  FROM minimum s
                 WHERE s.song_album = a.id
                   AND s.song_count = (SELECT min(song_count) FROM minimum));
-  
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-SELECT count(s.ID),
-       (SELECT g1.genre_name
-          FROM genre g1
-         WHERE g1.ID = g.ID) 
-  FROM genre g
-       JOIN artist_genre ag ON ag.genre = g.id 
-       JOIN artist a ON a.id = ag.artist 
-       JOIN album_artist aa ON aa.artist = a.id 
-       JOIN album a2 ON a2.id = aa.album 
-       JOIN song s ON s.song_album = a2.id 
- GROUP BY (g.id)
