@@ -22,10 +22,29 @@
   WHERE a.artist_name NOT LIKE '% %';
 
 ----- 2.5 Название треков, которые содержат слово «мой» или «my».
+-- ILIKE
  SELECT s.song_name
-   FROM song s 
-  WHERE lower(s.song_name) LIKE '%my%'
-     OR lower(s.song_name) LIKE '%мой%';
+   FROM song s
+  WHERE s.song_name ILIKE 'my %'
+     or s.song_name ILIKE '% my'
+     or s.song_name ILIKE '% my %'
+     or s.song_name ILIKE 'my'
+     or s.song_name ILIKE 'мой %'
+     or s.song_name ILIKE '% мой'
+     or s.song_name ILIKE '% мой %'
+     or s.song_name ILIKE 'мой';
+
+
+-- separate && array
+ SELECT s.song_name
+   FROM song s
+  WHERE string_to_array(lower(s.song_name), ' ') && array['my', 'мой'];
+
+-- regexp
+ SELECT s.song_name
+   FROM song s
+  WHERE s.song_name ~* '\mmy\M'
+     or s.song_name ~* '\mмой\M';
 
 -- Задание 3
 ------ 3.1 Количество исполнителей в каждом жанре.
